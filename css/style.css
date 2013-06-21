@@ -16,6 +16,11 @@ dd {
     font-weight: lighter;
 }
 
+.imagelist {
+    background: #CCC;
+    padding: 0.5em 1em 0.5em 1em;
+}
+
 #image {
     position: absolute;
     border: solid 1px #000;
@@ -33,19 +38,19 @@ dd {
     opacity: 0.5;    
 }
 
-#highlight-string {
+.hs {
     border: solid 1px #f0f;
     background-color: #00C;
 }
-#highlight-line {
+.hl {
     border: solid 1px #f00;
     background-color: #99FF99;
 }
-#highlight-block {
+.hb {
     border: solid 1px #1f1;
     background-color: #FFCCFF;
 }
-#highlight-printspace {
+.ps {
     border: solid 1px #00f;
     background-color: #00CCFF;
 }
