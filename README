@@ -2,7 +2,8 @@ Fork features
 -------------
 
   * Faster toggling of overlays
-  * Tool-tip for Strings with the OCR text
+  * Graduated color coding of Alto-String overlays to signify confidence level
+  * Tool-tip for Strings with the OCR text and confidence levels
   * Listing of all available images if no image is present
   * Custom scaling factor for Alto vs. image dimensions
 
