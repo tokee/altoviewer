@@ -109,6 +109,6 @@ class AltoElement
     }
     public function getCC() 
     {
-        return $this->_wc;
+        return $this->_cc;
     }
 }
