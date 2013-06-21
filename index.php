@@ -141,6 +141,7 @@ Blocks: <?php echo sizeof($textBlocks); ?><br/>
                 height="<?php echo $scaledHeight; ?>" />
             <?php foreach ($strings as $string) {
                   $wc = $string->getWC();
+                  $cc = $string->getCC();
                   if ( $wc != '' ) {
                       if ($wc < 0.25) {
                           $wc_style = "wc000to025";
@@ -158,7 +159,7 @@ Blocks: <?php echo sizeof($textBlocks); ?><br/>
                   }
             ?>
                 <div class="highlighter hs <?php echo $wc_style; ?>"
-                    title="<?php echo $string->getContent(); echo " (WC=$wc)"; ?>"
+                    title="<?php echo $string->getContent(); echo " (WC=$wc, CC=$cc)"; ?>"
                     style=" left: <?php echo $string->getHPos(); ?>px; 
                             top: <?php echo $string->getVPos(); ?>px; 
                             width: <?php echo $string->getWidth(); ?>px; 
