@@ -15,16 +15,12 @@
 class AltoElement 
 {
     protected $_id;
-    
     protected $_type;
-
     protected $_hPos;
-    
     protected $_vPos;
-
     protected $_height;
-
     protected $_width;
+    protected $_content;
     
     /**
      * @param DOMElement $element ALTO Element 
@@ -32,11 +28,13 @@ class AltoElement
     public function __construct($element) 
     {
         $this->_type = $element->tagName;
-        $this->_id = $element->getAttribute('default:ID');
-        $this->_hPos = $element->getAttribute('default:HPOS');
-        $this->_vPos = $element->getAttribute('default:VPOS');
-        $this->_height = $element->getAttribute('default:HEIGHT');
-        $this->_width = $element->getAttribute('default:WIDTH');
+        $this->_id = $element->getAttribute('ID');
+        $this->_hPos = $element->getAttribute('HPOS');
+        $this->_vPos = $element->getAttribute('VPOS');
+        $this->_height = $element->getAttribute('HEIGHT');
+        $this->_width = $element->getAttribute('WIDTH');
+        /** Only present for String */
+        $this->_content = htmlentities($element->getAttribute('CONTENT'));
     }
     
     /**
@@ -44,12 +42,12 @@ class AltoElement
      * @param mixed $vScale Vertical Scale ratio 
      * @param mixed $hScale Horizontal Scale ratio 
      */
-    public function scale($vScale, $hScale) 
+    public function scale($vScale, $hScale, $dScale) 
     {
-        $this->_hPos   = floor($this->_hPos  * (float) $hScale);
-        $this->_vPos   = floor($this->_vPos  * (float) $vScale);
-        $this->_height = ceil($this->_height * (float) $vScale);
-        $this->_width  = ceil($this->_width  * (float) $hScale);
+        $this->_hPos   = floor($this->_hPos  * (float) $hScale * (float) $dScale);
+        $this->_vPos   = floor($this->_vPos  * (float) $vScale * (float) $dScale);
+        $this->_height = ceil($this->_height * (float) $vScale * (float) $dScale);
+        $this->_width  = ceil($this->_width  * (float) $hScale * (float) $dScale);
     }
     
     /**
@@ -86,5 +84,15 @@ class AltoElement
     public function getWidth() 
     {
         return $this->_width;
+    }
+
+   public function getId() 
+    {
+        return $this->_id;
+    }
+
+   public function getContent() 
+    {
+        return $this->_content;
     }
 }

@@ -17,18 +17,13 @@ require_once 'lib/AltoElement.php';
 class AltoViewer 
 {
     protected $_altoDir;
-    
     protected $_imageDir;
-    
     protected $_altoDom;
-    
     protected $_imageSize;
-    
     protected $_fileId;
-    
     protected $_vScale;
-    
     protected $_hScale;
+    protected $_dScale;
 
     /**
      * Scale Elements vertically and horizontally
@@ -38,15 +33,16 @@ class AltoViewer
      * @param float $vScale Vertical scale ratio
      * @param float $hScale Horizontal scale ratio
      */    
-    public function __construct($altoDir, $imageDir, $fileId, $vScale, $hScale) 
+    public function __construct($altoDir, $imageDir, $fileId, $vScale, $hScale, $dScale) 
     {
         $this->_altoDir = $altoDir;
         $this->_imageDir = $imageDir;    
         $this->_fileId = $fileId;    
         $this->_vScale = $vScale;    
         $this->_hScale = $hScale;    
+        $this->_dScale = $dScale;    
         
-        $this->_loadAlto($this->_altoDir . DIRECTORY_SEPARATOR . $this->_fileId . '.xml');
+        $this->_loadAlto($this->_altoDir . DIRECTORY_SEPARATOR . $this->_fileId . '.alto.xml');
         $this->_setImageSize();
     }
 
@@ -70,7 +66,7 @@ class AltoViewer
         $return = array();
         foreach ($strings as $string) {
             $s = new AltoElement($string);
-            $s->scale($this->_vScale, $this->_hScale);
+            $s->scale($this->_vScale, $this->_hScale, $this->_dScale);
             $return[] = $s;
         }
         return $return;
@@ -86,7 +82,7 @@ class AltoViewer
         $return = array();
         foreach ($textLines as $textLine) {
             $t = new AltoElement($textLine);
-            $t->scale($this->_vScale, $this->_hScale);
+            $t->scale($this->_vScale, $this->_hScale, $this->_dScale);
             $return[] = $t;
         }
         return $return;
@@ -102,7 +98,7 @@ class AltoViewer
         $return = array();
         foreach ($textBlocks as $textBlock) {
             $t = new AltoElement($textBlock);
-            $t->scale($this->_vScale, $this->_hScale);
+            $t->scale($this->_vScale, $this->_hScale, $this->_dScale);
             $return[] = $t;
         }
         return $return;
@@ -116,7 +112,7 @@ class AltoViewer
     {
         $printSpace = $this->_altoDom->getElementsByTagName('PrintSpace');
         $p = new AltoElement($printSpace->item(0));
-        $p->scale($this->_vScale, $this->_hScale);
+        $p->scale($this->_vScale, $this->_hScale, $this->_dScale);
         return $p;
     }
     
@@ -125,7 +121,7 @@ class AltoViewer
      */    
     protected function _setImageSize() 
     {
-        $this->_imageSize = getimagesize(($this->_imageDir . DIRECTORY_SEPARATOR . $this->_fileId . '.tif.png'));
+        $this->_imageSize = getimagesize(($this->_imageDir . DIRECTORY_SEPARATOR . $this->_fileId . '.png'));
     }
     
     /**

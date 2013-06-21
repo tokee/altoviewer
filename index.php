@@ -17,13 +17,57 @@ require_once 'lib/AltoViewer.php';
  
 $vScale = $_REQUEST['vScale'];
 $hScale = $_REQUEST['hScale'];
+$dScale = $_REQUEST['dScale'];
 $image = $_REQUEST['image'];
 
 $config = parse_ini_file('./config/altoview.ini');
 
+function endsWith($haystack, $needle) {
+     return substr($haystack, -strlen($needle))===$needle;
+}
+
+function sans_suffix($file) {
+     return preg_replace('/\.[^.]+$/','',$file);
+}
+
+function listFiles($root, $folder) {
+   global $hScale, $vScale, $dScale;
+   if ($handle = opendir("$root/$folder")) {
+       $blacklist = array('.', '..');
+       while (false !== ($file = readdir($handle))) {
+           if (!in_array($file, $blacklist)) {
+               $path = ($folder == "" ? $file : "$folder/$file");
+               if (is_dir("$root/$path")) {
+                   listFiles($root, "$path");
+               } else {
+                   if (endsWith($file, ".png") || endsWith($file, ".jpg")) {
+                       $image = sans_suffix($path);
+                   ?> <a href="index.php?hScale=<?php echo $hScale; ?>&vScale=<?php echo $vScale; ?>&dScale=<?php echo $dScale; ?>&image=<?php echo $image; ?>"><?php echo $image; ?></a><br/> <?php
+                   }
+               }
+            }
+        }
+        closedir($handle);
+    } else {
+        echo "No images available in ";
+        echo $config['imageDir'];
+    }
+     
+}
+
+?>
+
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>          
+        <?php if ($image == '') { ?>
+            <title>ALTO Viewer T2 available images</title>
+        <?php } else { 
+
 $altoViewer = new AltoViewer(   $config['altoDir'], 
                                 $config['imageDir'], 
-                                $image, $vScale, $hScale);
+                                $image, $vScale, $hScale, $dScale);
 $imageSize = $altoViewer->getImageSize();
 $strings = $altoViewer->getStrings();
 $textLines = $altoViewer->getTextLines();
@@ -34,88 +78,113 @@ $scaledHeight = $imageSize[1] * $vScale;
 $scaledWidth = $imageSize[0] * $hScale;
 
 ?>
-
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="css/style.css" />
-        <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>          
-        <title>ALTO Viewer - <?php echo $image; ?> - <?php echo $vScale; ?> x <?php echo $hScale; ?> - (<?php echo $imageSize[0]; ?>x<?php echo $imageSize[1]; ?>px)</title>
+            <title>ALTO Viewer T2 - <?php echo $image; ?> - <?php echo $vScale; ?> x <?php echo $hScale; ?> - (<?php echo $imageSize[0]; ?>x<?php echo $imageSize[1]; ?>px)</title>
+        <?php } ?>
     </head>
     <body>
+
+        <?php if ($image == '') { ?>
+        <h1>Available images</h1>
+        <div class="imagelist">
+
+<?php  listFiles($config['imageDir'], ""); ?>
+
+</div>
+
+<?php } else { ?>
+
+
+<!--
+Strings: <?php echo sizeof($strings); ?><br/>
+Lines: <?php echo sizeof($textLines); ?><br/>
+Blocks: <?php echo sizeof($textBlocks); ?><br/>
+-->
+
+<h1>Showing <?php echo $image; ?></h1>
+
         <div class="menu">
             <div class="menuBox" id="toggleBox">
                 <span>Toggle Layers</span><br />
-                <button id="strings" >Strings</button><br />
-                <button id="lines" >TextLine</button><br />
-                <button id="blocks" >TextBlock</button><br />
-                <button id="printspace" >PrintSpace</button><br />
+                <input type="checkbox" id="strings" >Strings</input><br />
+                <input type="checkbox" id="lines" >TextLine</input><br />
+                <input type="checkbox" checked="checked" id="blocks" >TextBlock</input><br />
+                <input type="checkbox" id="printspace" >PrintSpace</input><br />
             </div>
         </div>
         
         <div id="image">
             <img 
-                src="images/<?php echo $image; ?>.tif.png" 
+                src="images/<?php echo $image; ?>.png" 
                 width="<?php echo $scaledWidth; ?>" 
                 height="<?php echo $scaledHeight; ?>" />
             <?php foreach ($strings as $string) { ?>
-                <div class="highlighter" id="highlight-string" 
+                <div class="highlighter hs"
+                    title="<?php echo $string->getContent(); ?>"
                     style=" left: <?php echo $string->getHPos(); ?>px; 
                             top: <?php echo $string->getVPos(); ?>px; 
                             width: <?php echo $string->getWidth(); ?>px; 
                             height: <?php echo $string->getHeight(); ?>px; 
-                            filter: alpha(opacity=50)" >
+                            filter: alpha(opacity=50); 
+                            z-index: 4;
+                            display: none" >
                 </div>
             <?php } ?>
             <script>
-                $("button[id*=strings]").click(function () {
-                $("div[id*=highlight-string]").toggle();
+                $("input[id=strings]").click(function () {
+                $("div.hs").toggle();
                 });    
             </script>
             
             <?php foreach ($textLines as $textLine) { ?>
-                <div class="highlighter" id="highlight-line" 
+                <div class="highlighter hl"
                     style=" left: <?php echo $textLine->getHPos(); ?>px; 
                             top: <?php echo $textLine->getVPos(); ?>px; 
                             width: <?php echo $textLine->getWidth(); ?>px; 
                             height: <?php echo $textLine->getHeight(); ?>px; 
-                            filter: alpha(opacity=50)" >
+                            filter: alpha(opacity=50); 
+                            z-index: 3;
+                            display: none">
                 </div>
             <?php } ?>
             <script>
-                $("button[id*=lines]").click(function () {
-                $("div[id*=highlight-line]").toggle();
+                $("input[id=lines]").click(function () {
+                $("div.hl").toggle();
                 });    
             </script>
         
             <?php foreach ($textBlocks as $textBlock) { ?>
-                <div class="highlighter" id="highlight-block" 
+                <div class="highlighter hb"
                     style=" left: <?php echo $textBlock->getHPos(); ?>px; 
                             top: <?php echo $textBlock->getVPos(); ?>px; 
                             width: <?php echo $textBlock->getWidth(); ?>px; 
                             height: <?php echo $textBlock->getHeight(); ?>px; 
-                            filter: alpha(opacity=50)" >
+                            filter: alpha(opacity=50)
+                            z-index: 2" >
                 </div>
             <?php } ?>
             <script>
-                $("button[id*=blocks]").click(function () {
-                $("div[id*=highlight-block]").toggle();
+                $("input[id=blocks]").click(function () {
+                $("div.hb").toggle();
                 });    
             </script>
             
-            <div class="highlighter" id="highlight-printspace" 
+            <div class="highlighter ps"
                 style=" left: <?php echo $printSpace->getHPos(); ?>px; 
                         top: <?php echo $printSpace->getVPos(); ?>px; 
                         width: <?php echo $printSpace->getWidth(); ?>px; 
                         height: <?php echo $printSpace->getHeight(); ?>px; 
-                        filter: alpha(opacity=50)" >
+                        filter: alpha(opacity=50);
+                        z-index: 1;
+                        display: none" >
             </div>
             <script>
-                $("button[id*=printspace]").click(function () {
-                $("div[id*=highlight-printspace]").toggle();
+                $("input[id=printspace]").click(function () {
+                $("div.ps").toggle();
                 });    
             </script>
             
                     
         </div>
     </body>
+        <?php } ?>
 </html>
