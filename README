@@ -1,5 +1,28 @@
-ALTO Viewer
------------
+Fork features
+-------------
+
+  * Faster toggling of overlays
+  * Tool-tip for Strings with the OCR text
+  * Listing of all available images if no image is present
+  * Custom scaling factor for Alto vs. image dimensions
+
+
+Status
+------
+
+Still work-in-progress with no explicit time allocated for further development.
+
+
+TODO
+----
+
+  * Customizable Alto & Image suffixes
+  * Make the file listing toggable
+  * Easy scale change in the GUI
+
+
+Original documentation for ALTO Viewer
+--------------------------------------
 
 This viewer was developed to give a visual representation of ALTO XML Files.
 For more infromation on the ALTO XML standard, see the Library of Congress website: http://www.loc.gov/standards/alto/
