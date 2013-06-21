@@ -165,7 +165,8 @@ Blocks: <?php echo sizeof($textBlocks); ?><br/>
                             width: <?php echo $string->getWidth(); ?>px; 
                             height: <?php echo $string->getHeight(); ?>px; 
                             filter: alpha(opacity=50); 
-                            z-index: 4" >
+                            z-index: 4;
+                            display: none" >
                 </div>
             <?php } ?>
             <script>
