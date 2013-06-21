@@ -60,6 +60,7 @@ function listFiles($root, $folder) {
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>          
         <?php if ($image == '') { ?>
             <title>ALTO Viewer T2 available images</title>
@@ -102,6 +103,27 @@ Blocks: <?php echo sizeof($textBlocks); ?><br/>
 
 <h1>Showing <?php echo $image; ?></h1>
 
+            <?php foreach ($strings as $string) { 
+                  $wc = $string->getWC();
+                  if ( $wc != '' ) {
+                      if ($wc < 0.25) {
+                          $wc_style = "wc000to025";
+                      } else if ($wc < 0.50) {
+                          $wc_style = "wc025to050";
+                      } else if ($wc < 0.75) {
+                          $wc_style = "wc050to075";
+                      } else if ($wc < 1) {
+                          $wc_style = "wc075to100";
+                      } else {
+                          $wc_style = "wc100";
+                      }
+                  } else {
+                      $wc_style = "wcnone";
+                  }
+                  ?>
+            
+            <?php } ?>
+
         <div class="menu">
             <div class="menuBox" id="toggleBox">
                 <span>Toggle Layers</span><br />
@@ -117,16 +139,32 @@ Blocks: <?php echo sizeof($textBlocks); ?><br/>
                 src="images/<?php echo $image; ?>.png" 
                 width="<?php echo $scaledWidth; ?>" 
                 height="<?php echo $scaledHeight; ?>" />
-            <?php foreach ($strings as $string) { ?>
-                <div class="highlighter hs"
-                    title="<?php echo $string->getContent(); ?>"
+            <?php foreach ($strings as $string) {
+                  $wc = $string->getWC();
+                  if ( $wc != '' ) {
+                      if ($wc < 0.25) {
+                          $wc_style = "wc000to025";
+                      } else if ($wc < 0.50) {
+                          $wc_style = "wc025to050";
+                      } else if ($wc < 0.75) {
+                          $wc_style = "wc050to075";
+                      } else if ($wc < 1) {
+                          $wc_style = "wc075to100";
+                      } else {
+                          $wc_style = "wc100";
+                      }
+                  } else {
+                      $wc_style = "wcnone";
+                  }
+            ?>
+                <div class="highlighter hs <?php echo $wc_style; ?>"
+                    title="<?php echo $string->getContent(); echo " (WC=$wc)"; ?>"
                     style=" left: <?php echo $string->getHPos(); ?>px; 
                             top: <?php echo $string->getVPos(); ?>px; 
                             width: <?php echo $string->getWidth(); ?>px; 
                             height: <?php echo $string->getHeight(); ?>px; 
                             filter: alpha(opacity=50); 
-                            z-index: 4;
-                            display: none" >
+                            z-index: 4" >
                 </div>
             <?php } ?>
             <script>

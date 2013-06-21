@@ -38,10 +38,28 @@ dd {
     opacity: 0.5;    
 }
 
+    
+
 .hs {
     border: solid 1px #f0f;
     background-color: #00C;
 }
+.wc000to025 {
+    background-color: #EEF;
+}
+.wc025to050 {
+    background-color: #CCF;
+}
+.wc050to075 {
+    background-color: #99E;
+}
+.wc075to100 {
+    background-color: #66D;
+}
+.wc100 {
+    background-color: #00C;
+}
+
 .hl {
     border: solid 1px #f00;
     background-color: #99FF99;

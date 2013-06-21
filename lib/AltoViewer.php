@@ -52,7 +52,14 @@ class AltoViewer
      */        
     protected function _loadAlto($altoFilename) 
     {
-        $this->_altoDom = new DOMDocument;
+/**        $myXMLString = file_get_contents($altoFilename);
+        $myXMLString = utf8_decode($myXMLString);
+*/
+
+        /** It appears that the input is not parsed as UTF-8 although it
+            is stated in the XML */
+        $this->_altoDom = new DOMDocument('1.0', 'utf-8');
+/**        $this->_altoDom->loadXML($myXMLString);*/
         $this->_altoDom->load($altoFilename);    
     }
 

@@ -20,7 +20,13 @@ class AltoElement
     protected $_vPos;
     protected $_height;
     protected $_width;
+
+    /** Propoerties below is just for Strings */
     protected $_content;
+    /** Confidence level for the whole word, 0=unsure, 1=confident  */
+    protected $_wc;
+    /** Confidence level for each character, 0=confident, 9=unsure */
+    protected $_cc;
     
     /**
      * @param DOMElement $element ALTO Element 
@@ -35,6 +41,8 @@ class AltoElement
         $this->_width = $element->getAttribute('WIDTH');
         /** Only present for String */
         $this->_content = htmlentities($element->getAttribute('CONTENT'));
+        $this->_wc = htmlentities($element->getAttribute('WC'));
+        $this->_cc = htmlentities($element->getAttribute('CC'));
     }
     
     /**
@@ -94,5 +102,13 @@ class AltoElement
    public function getContent() 
     {
         return $this->_content;
+    }
+    public function getWC() 
+    {
+        return $this->_wc;
+    }
+    public function getCC() 
+    {
+        return $this->_wc;
     }
 }
